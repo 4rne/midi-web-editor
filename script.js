@@ -3,7 +3,7 @@ var bpm = 120;
 const context = new (window.AudioContext || window.webkitAudioContext)();
 var o = context.createOscillator();
 var vol = context.createGain()
-vol.gain.value = 0.1
+vol.gain.value = 0.01
 vol.connect(context.destination)
 
 function sleep(milliseconds) {
@@ -11,7 +11,7 @@ function sleep(milliseconds) {
 }
 
 function parseAndPlay() {
-    parser = new Parser(input.value);
+    parser = new Parser(input.value.replace(/ [pP]\d /, ''));
     parser.parse();
     parser.play();
 }
@@ -41,7 +41,7 @@ class Tone {
             function() {
                 o.disconnect(vol);
                 parser.play();
-            }, 200);
+            }, 1 / this.length * 4 * 60 / bpm * 1000);
     }
 }
 
