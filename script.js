@@ -1,17 +1,5 @@
 var bpm = 120;
 
-
-// var vol = context.createGain();
-// vol.gain.value = 0.1;
-// o.connect(vol);
-// var context = new AudioContext();
-// var o = context.createOscillator();
-// o.start(0);
-// o.connect(context.destination);
-// o.frequency = 440
-// o.stop(0.1);
-// o.disconnect(context.destination);
-
 const context = new (window.AudioContext || window.webkitAudioContext)();
 var o = context.createOscillator();
 var vol = context.createGain()
@@ -53,7 +41,7 @@ class Tone {
             function() {
                 o.disconnect(vol);
                 parser.play();
-            }, 100);
+            }, 200);
     }
 }
 
@@ -67,19 +55,22 @@ class Parser {
         for(let i = 0; i < this.notes.length; i++)
         {
             let el = this.notes[i].match(/([cdefgahCDEFGAH])([#b]?)('{0,3})((?:1|2|4|8|16)?\.?)/)
-            // console.log(el);
 
             let note = this.getNote(el[1], el[2], el[3]);
-            this.tones.push(new Tone(note, el[4]));
+            let freq = this.calculateFrequency(note)
+            this.tones.push(new Tone(freq, el[4]));
         }
         this.tones.reverse()
     }
 
     play() {
         if(this.tones.length > 0) {
-            console.log(this.tones)
             this.tones.pop().play();
         }
+    }
+
+    calculateFrequency(n) {
+        return (Math.pow(2, 1/12) ** (n - 49) * 440)
     }
 
     getNote(name, modifier, height)
