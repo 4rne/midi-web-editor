@@ -31,7 +31,10 @@ function registerEvents()
 class Tone {
     constructor(freq, length) {
         this.freq = freq;
-        this.length = length;
+        this.length = 1 / length * 4 * 60 / bpm * 1000;
+        if(length.indexOf(".") != -1) {
+            this.length *= 1.5;
+        }
     }
     play()
     {
@@ -41,7 +44,7 @@ class Tone {
             function() {
                 o.disconnect(vol);
                 parser.play();
-            }, 1 / this.length * 4 * 60 / bpm * 1000);
+            }, this.length);
     }
 }
 
