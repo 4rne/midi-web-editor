@@ -14,6 +14,9 @@ var bpm = 120;
 
 const context = new (window.AudioContext || window.webkitAudioContext)();
 var o = context.createOscillator();
+var vol = context.createGain()
+vol.gain.value = 0.1
+vol.connect(context.destination)
 
 function sleep(milliseconds) {
     return new Promise(resolve => setTimeout(resolve, milliseconds));
@@ -45,10 +48,10 @@ class Tone {
     play()
     {
         o.frequency.setValueAtTime(this.freq, context.currentTime);
-        o.connect(context.destination);
+        o.connect(vol);
         setTimeout(
             function() {
-                o.disconnect(context.destination);
+                o.disconnect(vol);
                 parser.play();
             }, 100);
     }
