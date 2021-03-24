@@ -63,7 +63,7 @@ class Parser {
 
             let name = el.match(/([cdefgahCDEFGAH])/)[1]
             let modifier = el.match(/.([#b]?)/)[1]
-            let height = 0;
+            let height = "";
             if(el.match(/''{0,3}/) != null) {
                 height = el.match(/''{0,3}/)[0]
             }
