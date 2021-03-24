@@ -21,7 +21,9 @@ function registerEvents()
     var parser;
     var input = document.getElementById("input")
     var play = document.getElementById("play")
-    input.value = "e''8 d''8 f#'4 g#'4 c#''8 h'8 d'4 e'4 h'8 a'8 c#'4 e'4 a'2."
+    if(input.value == "") {
+        input.value = "e''8 d''8 f#'4 g#'4 c#''8 h'8 d'4 e'4 h'8 a'8 c#'4 e'4 a'2."
+    }
     play.addEventListener("click", function(){
         parseAndPlay();
     });
@@ -57,15 +59,21 @@ class Parser {
     parse() {
         for(let i = 0; i < this.notes.length; i++)
         {
-            let el = this.notes[i].match(/([cdefgahCDEFGAH])([#b]?)('{0,3})((?:1|2|4|8|16)?\.?)/)
+            let el = this.notes[i]
 
-            let note = this.getNote(el[1], el[2], el[3]);
+            let name = el.match(/([cdefgahCDEFGAH])/)[1]
+            let modifier = el.match(/.([#b]?)/)[1]
+            let height = 0;
+            if(el.match(/''{0,3}/) != null) {
+                height = el.match(/''{0,3}/)[0]
+            }
+            let len = el.match(/(?:.*((1|2|4|8|16)\.?))?/)[1]
+            let note = this.getNote(name, modifier, height);
             let freq = this.calculateFrequency(note);
             let length = "4";
-            if(el[4] != "") {
-                length = el[4];
+            if(len != "" && typeof len != "undefined" ) {
+                length = len;
             }
-            console.log(length)
             this.tones.push(new Tone(freq, length));
         }
         this.tones.reverse()
