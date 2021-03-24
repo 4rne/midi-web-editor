@@ -1,4 +1,4 @@
-var bpm = 120;
+var bpm = 180;
 
 const context = new (window.AudioContext || window.webkitAudioContext)();
 var o = context.createOscillator();
@@ -60,8 +60,13 @@ class Parser {
             let el = this.notes[i].match(/([cdefgahCDEFGAH])([#b]?)('{0,3})((?:1|2|4|8|16)?\.?)/)
 
             let note = this.getNote(el[1], el[2], el[3]);
-            let freq = this.calculateFrequency(note)
-            this.tones.push(new Tone(freq, el[4]));
+            let freq = this.calculateFrequency(note);
+            let length = "4";
+            if(el[4] != "") {
+                length = el[4];
+            }
+            console.log(length)
+            this.tones.push(new Tone(freq, length));
         }
         this.tones.reverse()
     }
