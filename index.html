@@ -3,7 +3,10 @@
         <title>Midi Web Editor</title>
         <script src="script.js"></script>
     </head>
-    <body onload="registerEvents()">
+    <body onload="registerEvents()" style="font-family: sans-serif">
+        <div class="menu" style="margin-bottom: 2em">
+            Midi-Editor for <a href="https://github.com/ProjektionTV/Esp32MidiPlayer" target="_blank">Esp32MidiPlayer</a> | Improve this editor on <a href="https://github.com/4rne/midi-web-editor" target="_blank">GitHub</a>
+        </div>
         <div class="controls">
             <input type="range" id="volume" min="1" max="100" value="10">
             <input type="button" value="play" id="play">
