@@ -11,7 +11,7 @@ function sleep(milliseconds) {
 }
 
 function parseAndPlay() {
-    parser = new Parser(input.value.replace(/ [pP]\d /, ''));
+    parser = new Parser(input.value);
     parser.parse();
     parser.play();
 }
@@ -40,13 +40,20 @@ class Tone {
     }
     play()
     {
-        o.frequency.setValueAtTime(this.freq, context.currentTime);
-        o.connect(vol);
-        setTimeout(
-            function() {
-                o.disconnect(vol);
-                parser.play();
-            }, this.length);
+        if(this.freq != 0) {
+            o.frequency.setValueAtTime(this.freq, context.currentTime);
+            o.connect(vol);
+            setTimeout(
+                function() {
+                    o.disconnect(vol);
+                    parser.play();
+                }, this.length);
+        } else {
+            setTimeout(
+                function() {
+                    parser.play();
+                }, this.length);
+        }
     }
 }
 
@@ -61,15 +68,14 @@ class Parser {
         {
             let el = this.notes[i]
 
-            let name = el.match(/([cdefgahCDEFGAH])/)[1]
+            let name = el.match(/([cdefgahpCDEFGAHP])/)[1]
             let modifier = el.match(/.([#b]?)/)[1]
             let height = "";
             if(el.match(/''{0,3}/) != null) {
                 height = el.match(/''{0,3}/)[0]
             }
             let len = el.match(/(?:.*((1|2|4|8|16)\.?))?/)[1]
-            let note = this.getNote(name, modifier, height);
-            let freq = this.calculateFrequency(note);
+            let freq = this.getFrequency(name, modifier, height);
             let length = "4";
             if(len != "" && typeof len != "undefined" ) {
                 length = len;
@@ -89,27 +95,30 @@ class Parser {
         return (Math.pow(2, 1/12) ** (n - 49) * 440)
     }
 
-    getNote(name, modifier, height)
+    getFrequency(name, modifier, height)
     {
-        let start;
+        if(name.toLowerCase() == "p") {
+            return 0;
+        }
+        let noteId;
         let direction;
         if(name.match(/[CDEFGAH]/)) {
             direction = -1;
-            start = 40;
+            noteId = 40;
         } else {
             direction = +1;
-            start = 52;
+            noteId = 52;
         }
         if(modifier === "#") {
-            start++;
+            noteId++;
         } else if (modifier === "b") {
-            start--;
+            noteId--;
         }
 
         let note = "c d ef g a h".indexOf(name.toLowerCase())
-        start += note;
-        start += 12 * height.length * direction;
-        return start;
+        noteId += note;
+        noteId += 12 * height.length * direction;
+        return this.calculateFrequency(noteId);
     }
 }
 // C''' D''' E''' F''' G''' A''' H''' C'' D'' E'' F'' G'' A'' H'' C' D' E' F' G' A' H' C D E F G A H c d e f g a h c' d' e' f' g' a' h' c'' d'' e'' f'' g'' a'' h'' c''' d''' e''' f''' g''' a''' h'''
