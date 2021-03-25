@@ -1,11 +1,12 @@
 var bpm = 120;
 var playBtn;
+var volumeSlider;
 var parser;
 
 const context = new (window.AudioContext || window.webkitAudioContext)();
 var o = context.createOscillator();
 var vol = context.createGain()
-vol.gain.value = 0.01
+vol.gain.value = 0.05
 vol.connect(context.destination)
 
 function parseAndPlay() {
@@ -21,11 +22,15 @@ function registerEvents()
     var input = document.getElementById("input")
     playBtn = document.getElementById("play")
     stopBtn = document.getElementById("stop")
+    volumeSlider = document.getElementById("volume")
     if(input.value == "") {
-        input.value = "e''8 d''8 f#'4 g#'4 c#''8 h'8 d'4 e'4 h'8 a'8 c#'4 e'4 a'2."
+        input.value = "e'8 d'8 f#4 g#4 c#'8 h8 d4 e4 h8 a8 c#4 e4 a2."
     }
     playBtn.addEventListener("click", function(){
         parseAndPlay();
+    });
+    volumeSlider.addEventListener("change", function(){
+        vol.gain.value = ((volumeSlider.value ** 2) / 10000.0);
     });
     stopBtn.addEventListener("click", function(){
         o.disconnect(vol);

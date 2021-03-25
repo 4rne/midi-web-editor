@@ -4,7 +4,11 @@
         <script src="script.js"></script>
     </head>
     <body onload="registerEvents()">
-        <textarea id="input" cols="30" rows="10"></textarea>
-        <input type="button" value="play" id="play">
+        <div class="controls">
+            <input type="range" id="volume" min="1" max="100" value="10">
+            <input type="button" value="play" id="play">
+            <input type="button" value="stop" id="stop">
+        </div>
+        <textarea id="input" cols="120" rows="10"></textarea>
     </body>
 </html>
