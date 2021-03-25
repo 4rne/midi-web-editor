@@ -1,2 +1,2 @@
 # Midi Web Editor
-Use [here](https://4rne.github.io/midi-web-editor/) for [this](https://github.com/ProjektionTV/Esp32MidiPlayer)
+Use this editor [here](https://4rne.github.io/midi-web-editor/). It should support the same format used by this player: [Esp32MidiPlayer](https://github.com/ProjektionTV/Esp32MidiPlayer).
