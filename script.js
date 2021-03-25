@@ -1,4 +1,6 @@
-var bpm = 180;
+var bpm = 120;
+var playBtn;
+var parser;
 
 const context = new (window.AudioContext || window.webkitAudioContext)();
 var o = context.createOscillator();
@@ -6,11 +8,9 @@ var vol = context.createGain()
 vol.gain.value = 0.01
 vol.connect(context.destination)
 
-function sleep(milliseconds) {
-    return new Promise(resolve => setTimeout(resolve, milliseconds));
-}
-
 function parseAndPlay() {
+    playBtn.disabled = true;
+    playBtn.value = "playing...";
     parser = new Parser(input.value);
     parser.parse();
     parser.play();
@@ -18,14 +18,20 @@ function parseAndPlay() {
 
 function registerEvents()
 {
-    var parser;
     var input = document.getElementById("input")
-    var play = document.getElementById("play")
+    playBtn = document.getElementById("play")
+    stopBtn = document.getElementById("stop")
     if(input.value == "") {
         input.value = "e''8 d''8 f#'4 g#'4 c#''8 h'8 d'4 e'4 h'8 a'8 c#'4 e'4 a'2."
     }
-    play.addEventListener("click", function(){
+    playBtn.addEventListener("click", function(){
         parseAndPlay();
+    });
+    stopBtn.addEventListener("click", function(){
+        o.disconnect(vol);
+        parser.tones = [];
+        playBtn.disabled = false;
+        playBtn.value = "play";
     });
     o.start();
 }
@@ -88,6 +94,9 @@ class Parser {
     play() {
         if(this.tones.length > 0) {
             this.tones.pop().play();
+        } else {
+            playBtn.disabled = false;
+            playBtn.value = "play";
         }
     }
 
