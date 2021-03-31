@@ -4,7 +4,12 @@ var volumeSlider;
 var parser;
 
 const context = new (window.AudioContext || window.webkitAudioContext)();
-var o = context.createOscillator();
+var o = [];
+for (let i = 0; i < 5; i++) {
+    let osc = context.createOscillator();
+    osc.type = 'sine'
+    o.push(osc);
+}
 var vol = context.createGain()
 vol.gain.value = 0.05
 vol.connect(context.destination)
@@ -24,7 +29,7 @@ function registerEvents()
     stopBtn = document.getElementById("stop")
     volumeSlider = document.getElementById("volume")
     if(input.value == "") {
-        input.value = "e'8 d'8 f#4 g#4 c#'8 h8 d4 e4 h8 a8 c#4 e4 a2."
+        input.value = "e8 d8 F#4 G#4 c#8 H8 D4 E4 H8 A8 C#4 E4 A2."
     }
     playBtn.addEventListener("click", function(){
         parseAndPlay();
@@ -33,17 +38,22 @@ function registerEvents()
         vol.gain.value = ((volumeSlider.value ** 2) / 10000.0);
     });
     stopBtn.addEventListener("click", function(){
-        o.disconnect(vol);
+        o.forEach(oscilator => {
+            oscilator.disconnect(vol);
+        });
         parser.tones = [];
         playBtn.disabled = false;
         playBtn.value = "play";
     });
-    o.start();
+    o.forEach(oscilator => {
+        oscilator.start();
+    });
 }
 
 class Tone {
-    constructor(freq, length) {
+    constructor(freq, length, osc) {
         this.freq = freq;
+        this.osc = osc;
         this.length = 1 / length * 4 * 60 / bpm * 1000;
         if(length.indexOf(".") != -1) {
             this.length *= 1.5;
@@ -52,18 +62,22 @@ class Tone {
     play()
     {
         if(this.freq != 0) {
-            o.frequency.setValueAtTime(this.freq, context.currentTime);
-            o.connect(vol);
+            o[this.osc].frequency.setValueAtTime(this.freq, context.currentTime);
+            o[this.osc].connect(vol);
             setTimeout(
-                function() {
-                    o.disconnect(vol);
-                    parser.play();
-                }, this.length);
+                function(x) {
+                    o[x].disconnect(vol);
+                    if(x === 0) {
+                        parser.play();
+                    }
+                }, this.length, this.osc);
         } else {
             setTimeout(
-                function() {
+                function(x) {
+                if(x === 0) {
                     parser.play();
-                }, this.length);
+                }
+                }, this.length, this.osc);
         }
     }
 }
@@ -78,27 +92,37 @@ class Parser {
         for(let i = 0; i < this.notes.length; i++)
         {
             let el = this.notes[i]
-
-            let name = el.match(/([cdefgahpCDEFGAHP])/)[1]
-            let modifier = el.match(/.([#b]?)/)[1]
-            let height = "";
-            if(el.match(/''{0,3}/) != null) {
-                height = el.match(/''{0,3}/)[0]
+            
+            let currentChord = el.match(/([cdefgahpCDEFGAHP][#b'12486]*)/g)
+            let playChord = [];
+            for (let i = 0; i < currentChord.length; i++) {
+                const note = currentChord[i];
+                
+                let name = note.match(/([cdefgahpCDEFGAHP])/)[1]
+                let modifier = note.match(/.([#b]?)/)[1]
+                let height = "";
+                if(note.match(/''{0,3}/) != null) {
+                    height = note.match(/''{0,3}/)[0]
+                }
+                let len = note.match(/(?:.*((1|2|4|8|16)\.?))?/)[1]
+                let freq = this.getFrequency(name, modifier, height);
+                let length = "4";
+                if(len != "" && typeof len != "undefined" ) {
+                    length = len;
+                }
+                playChord.push(new Tone(freq, length, i));
             }
-            let len = el.match(/(?:.*((1|2|4|8|16)\.?))?/)[1]
-            let freq = this.getFrequency(name, modifier, height);
-            let length = "4";
-            if(len != "" && typeof len != "undefined" ) {
-                length = len;
-            }
-            this.tones.push(new Tone(freq, length));
+            this.tones.push(playChord);
         }
         this.tones.reverse()
     }
 
     play() {
         if(this.tones.length > 0) {
-            this.tones.pop().play();
+            let chord = this.tones.pop();
+            for (let i = 0; i < chord.length; i++) {
+                chord[i].play();
+            }
         } else {
             playBtn.disabled = false;
             playBtn.value = "play";
