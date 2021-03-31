@@ -29,8 +29,9 @@ function registerEvents()
     stopBtn = document.getElementById("stop")
     volumeSlider = document.getElementById("volume")
     if(input.value == "") {
-        input.value = "e8 d8 F#4 G#4 c#8 H8 D4 E4 H8 A8 C#4 E4 A2."
+        input.value = "e8' d8' f#4 g#4 c#8' h8 d4 e4 h8 a8 c#4 e4 a2." // nokia tune
     }
+    // Kein Anschluss unter dieser Nummer a#2' f''2 a#''2
     playBtn.addEventListener("click", function(){
         parseAndPlay();
     });
@@ -93,7 +94,7 @@ class Parser {
         {
             let el = this.notes[i]
             
-            let currentChord = el.match(/([cdefgahpCDEFGAHP][#b'12486]*)/g)
+            let currentChord = el.match(/([cdefgahpCDEFGAHP][#b'12486\.]*)/g)
             let playChord = [];
             for (let i = 0; i < currentChord.length; i++) {
                 const note = currentChord[i];
@@ -142,10 +143,10 @@ class Parser {
         let direction;
         if(name.match(/[CDEFGAH]/)) {
             direction = -1;
-            noteId = 40;
+            noteId = 38;
         } else {
             direction = +1;
-            noteId = 52;
+            noteId = 40;
         }
         if(modifier === "#") {
             noteId++;
