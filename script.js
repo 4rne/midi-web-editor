@@ -3,6 +3,11 @@ var playBtn;
 var volumeSlider;
 var parser;
 
+var samples = [["Nokia tune", "e'8 d'8 f#4 g#4 c'#8 h8 d4 e4 h8 a8 c#4 e4 a2."],
+               ["Kein Anschluss unter dieser Nummer", "a'#2 f''2 a''#2"],
+               ["Alle meine Entchen", "c d e f g2 g2 a a a a g1 a a a a g1 f f f f e2 e2 g g g g c"],
+               ["Tonleiter 5 Oktaven", "C' D' E' F' G' A' H' C D E F G A H c d e f g a h c' d' e' f' g' a' h' c'' d'' e'' f'' g'' a'' h'' c'''"]];
+
 const context = new (window.AudioContext || window.webkitAudioContext)();
 var o = [];
 for (let i = 0; i < 5; i++) {
@@ -29,9 +34,8 @@ function registerEvents()
     stopBtn = document.getElementById("stop")
     volumeSlider = document.getElementById("volume")
     if(input.value == "") {
-        input.value = "e8' d8' f#4 g#4 c#8' h8 d4 e4 h8 a8 c#4 e4 a2." // nokia tune
+        input.value = "e'8 d'8 f#4 g#4 c'#8 h8 d4 e4 h8 a8 c#4 e4 a2."
     }
-    // Kein Anschluss unter dieser Nummer a#2' f''2 a#''2
     playBtn.addEventListener("click", function(){
         parseAndPlay();
     });
@@ -39,16 +43,34 @@ function registerEvents()
         vol.gain.value = ((volumeSlider.value ** 2) / 10000.0);
     });
     stopBtn.addEventListener("click", function(){
+        playBtn.disabled = false;
+        playBtn.value = "play";
         o.forEach(oscilator => {
             oscilator.disconnect(vol);
         });
         parser.tones = [];
-        playBtn.disabled = false;
-        playBtn.value = "play";
     });
     o.forEach(oscilator => {
         oscilator.start();
     });
+
+    loadSamples();
+}
+
+function loadSamples() {
+    sampleContainer = document.getElementById("samples");
+    samples.forEach(sample => {
+        sampleContainer.innerHTML += '<input type="button" value="load" onclick="loadSample(&quot;' + sample[1] + '&quot;)">'
+        sampleContainer.innerHTML += ' '
+        sampleContainer.innerHTML += sample[0]
+        sampleContainer.innerHTML += ': '
+        sampleContainer.innerHTML += '<span style="font-family: Monospace">' + sample[1] + '</span>'
+        sampleContainer.innerHTML += "<br>"
+    });
+}
+
+function loadSample(melody) {
+    input.value = melody;
 }
 
 class Tone {
