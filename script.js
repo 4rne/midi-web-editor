@@ -100,7 +100,12 @@ class Parser {
                 const note = currentChord[i];
                 
                 let name = note.match(/([cdefgahpCDEFGAHP])/)[1]
-                let modifier = note.match(/.([#b]?)/)[1]
+                let mod = note.match(/([#b])/)
+                let modifier = "";
+                if(mod !== null)
+                {
+                    modifier = mod[1]
+                }
                 let height = "";
                 if(note.match(/''{0,3}/) != null) {
                     height = note.match(/''{0,3}/)[0]
@@ -160,4 +165,4 @@ class Parser {
         return this.calculateFrequency(noteId);
     }
 }
-// C''' D''' E''' F''' G''' A''' H''' C'' D'' E'' F'' G'' A'' H'' C' D' E' F' G' A' H' C D E F G A H c d e f g a h c' d' e' f' g' a' h' c'' d'' e'' f'' g'' a'' h'' c''' d''' e''' f''' g''' a''' h'''
+// C' D' E' F' G' A' H' C D E F G A H c d e f g a h c' d' e' f' g' a' h' c'' d'' e'' f'' g'' a'' h'' c'''
