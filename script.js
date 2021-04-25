@@ -148,7 +148,7 @@ class Parser {
         let direction;
         if(name.match(/[CDEFGAH]/)) {
             direction = -1;
-            noteId = 38;
+            noteId = 28;
         } else {
             direction = +1;
             noteId = 40;
