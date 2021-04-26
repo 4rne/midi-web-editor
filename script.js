@@ -107,11 +107,17 @@ class Tone {
 
 class Parser {
     constructor(str) {
-        this.notes = str.split(" ");
+        this.selectionStart = input.selectionStart;
+        this.selectionEnd = input.selectionEnd;
+        this.notes = str.trim().split(" ");
         this.tones = [];
+        this.noteBegin = 0;
+        this.cursorPosition = 0;
+        this.noteEnd = this.notes[this.cursorPosition].length
     }
 
     parse() {
+        input.focus();
         for(let i = 0; i < this.notes.length; i++)
         {
             let el = this.notes[i]
@@ -147,6 +153,11 @@ class Parser {
 
     play() {
         if(this.tones.length > 0) {
+            input.setSelectionRange(this.cursorPosition, this.cursorPosition + this.notes[0].length);
+            this.cursorPosition += this.notes[0].length + 1;
+            this.notes = this.notes.reverse()
+            this.notes.pop();
+            this.notes = this.notes.reverse()
             let chord = this.tones.pop();
             for (let i = 0; i < chord.length; i++) {
                 chord[i].play();
@@ -154,6 +165,7 @@ class Parser {
         } else {
             playBtn.disabled = false;
             playBtn.value = "play";
+            input.setSelectionRange(this.selectionStart, this.selectionEnd);
         }
     }
 
