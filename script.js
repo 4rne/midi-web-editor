@@ -138,7 +138,7 @@ class Parser {
                 if(note.match(/''{0,3}/) != null) {
                     height = note.match(/''{0,3}/)[0]
                 }
-                let len = note.match(/(?:.*((1|2|4|8|16)\.?))?/)[1]
+                let len = note.match(/(?:.*((16|2|4|8|1)\.?))?/)[1]
                 let freq = this.getFrequency(name, modifier, height);
                 let length = "4";
                 if(len != "" && typeof len != "undefined" ) {
