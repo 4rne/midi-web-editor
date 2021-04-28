@@ -20,6 +20,10 @@ vol.gain.value = 0.05
 vol.connect(context.destination)
 
 function parseAndPlay() {
+    context.resume().then(() => {
+        console.log('Playback resumed successfully');
+    });
+    
     playBtn.disabled = true;
     playBtn.value = "playing...";
     parser = new Parser(input.value);
