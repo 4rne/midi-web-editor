@@ -3,9 +3,10 @@ var playBtn;
 var volumeSlider;
 var parser;
 
-var samples = [["Nokia tune", "e'8 d'8 f#4 g#4 c'#8 h8 d4 e4 h8 a8 c#4 e4 a2."],
+var samples = [["Nokia tune", "bpm160 e'8 d'8 f#4 g#4 c'#8 h8 d4 e4 h8 a8 c#4 e4 a2."],
                ["Kein Anschluss unter dieser Nummer", "a'#2 f''2 a''#2"],
                ["Alle meine Entchen", "c d e f g2 g2 a a a a g1 a a a a g1 f f f f e2 e2 g g g g c"],
+               ["Brahms Wiegenlied", "bpm100 f#8 f#8 a4. f#8 f# a p f#8 a8 d' c'#4. h8 h a e8 f#8 g e e8 f#8 g p e8 g8 c'#8 h8 a c'# d'"],
                ["Tonleiter 5 Oktaven", "C' D' E' F' G' A' H' C D E F G A H c d e f g a h c' d' e' f' g' a' h' c'' d'' e'' f'' g'' a'' h'' c'''"]];
 
 const context = new (window.AudioContext || window.webkitAudioContext)();
@@ -121,6 +122,13 @@ class Parser {
     }
 
     parse() {
+        if(this.notes[0].match(/bpm([0-9]+)/) !== null) {
+            bpm = this.notes[0].match(/bpm([0-9]+)/)[1];
+            this.cursorPosition = this.notes[0].length + 1;
+            this.notes.shift();
+        } else {
+            bpm = 240;
+        }
         input.focus();
         for(let i = 0; i < this.notes.length; i++)
         {
