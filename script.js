@@ -11,7 +11,10 @@ var samples = [["Nokia tune", "bpm160 e'8 d'8 f#4 g#4 c'#8 h8 d4 e4 h8 a8 c#4 e4
 
 const context = new (window.AudioContext || window.webkitAudioContext)();
 var player = new WebAudioFontPlayer();
-player.loader.decodeAfterLoading(context, '_tone_0000_JCLive_sf2_file');
+var reverberator = player.createReverberator(context);	
+reverberator.output.connect(context.destination);
+reverberator.wet.gain.setTargetAtTime(0.05, 0, 0.0001);
+player.loader.decodeAfterLoading(context, '_tone_0001_FluidR3_GM_sf2_file');
 
 function parseAndPlay() {
     context.resume().then(() => {
@@ -74,7 +77,7 @@ class Tone {
     play()
     {
         if(this.pitch != 0) {
-            player.queueWaveTable(context, context.destination, _tone_0000_JCLive_sf2_file, 0, this.pitch, this.length / 750, volumeSlider.value / 100);
+            player.queueWaveTable(context, reverberator.input, _tone_0001_FluidR3_GM_sf2_file, 0, this.pitch, this.length / 750, volumeSlider.value / 100);
 
             setTimeout(
                 function(x) {
