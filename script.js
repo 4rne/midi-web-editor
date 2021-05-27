@@ -10,15 +10,8 @@ var samples = [["Nokia tune", "bpm160 e'8 d'8 f#4 g#4 c'#8 h8 d4 e4 h8 a8 c#4 e4
                ["Tonleiter 5 Oktaven", "C' D' E' F' G' A' H' C D E F G A H c d e f g a h c' d' e' f' g' a' h' c'' d'' e'' f'' g'' a'' h'' c'''"]];
 
 const context = new (window.AudioContext || window.webkitAudioContext)();
-var o = [];
-for (let i = 0; i < 5; i++) {
-    let osc = context.createOscillator();
-    osc.type = 'sine'
-    o.push(osc);
-}
-var vol = context.createGain()
-vol.gain.value = 0.05
-vol.connect(context.destination)
+var player = new WebAudioFontPlayer();
+player.loader.decodeAfterLoading(context, '_tone_0000_JCLive_sf2_file');
 
 function parseAndPlay() {
     context.resume().then(() => {
@@ -44,19 +37,10 @@ function registerEvents()
     playBtn.addEventListener("click", function(){
         parseAndPlay();
     });
-    volumeSlider.addEventListener("change", function(){
-        vol.gain.value = ((volumeSlider.value ** 2) / 10000.0);
-    });
     stopBtn.addEventListener("click", function(){
         playBtn.disabled = false;
         playBtn.value = "play";
-        o.forEach(oscilator => {
-            oscilator.disconnect(vol);
-        });
         parser.tones = [];
-    });
-    o.forEach(oscilator => {
-        oscilator.start();
     });
 
     loadSamples();
@@ -79,8 +63,8 @@ function loadSample(melody) {
 }
 
 class Tone {
-    constructor(freq, length, osc) {
-        this.freq = freq;
+    constructor(pitch, length, osc) {
+        this.pitch = pitch;
         this.osc = osc;
         this.length = 1 / length * 4 * 60 / bpm * 1000;
         if(length.indexOf(".") != -1) {
@@ -89,12 +73,11 @@ class Tone {
     }
     play()
     {
-        if(this.freq != 0) {
-            o[this.osc].frequency.setValueAtTime(this.freq, context.currentTime);
-            o[this.osc].connect(vol);
+        if(this.pitch != 0) {
+            player.queueWaveTable(context, context.destination, _tone_0000_JCLive_sf2_file, 0, this.pitch, this.length / 750, volumeSlider.value / 100);
+
             setTimeout(
                 function(x) {
-                    o[x].disconnect(vol);
                     if(x === 0) {
                         parser.play();
                     }
@@ -151,12 +134,12 @@ class Parser {
                     height = note.match(/''{0,3}/)[0]
                 }
                 let len = note.match(/(?:.*((16|2|4|8|1)\.?))?/)[1]
-                let freq = this.getFrequency(name, modifier, height);
+                let pitch = this.getPitch(name, modifier, height);
                 let length = "4";
                 if(len != "" && typeof len != "undefined" ) {
                     length = len;
                 }
-                playChord.push(new Tone(freq, length, i));
+                playChord.push(new Tone(pitch, length, i));
             }
             this.tones.push(playChord);
         }
@@ -181,11 +164,7 @@ class Parser {
         }
     }
 
-    calculateFrequency(n) {
-        return (Math.pow(2, 1/12) ** (n - 49) * 440)
-    }
-
-    getFrequency(name, modifier, height)
+    getPitch(name, modifier, height)
     {
         if(name.toLowerCase() == "p") {
             return 0;
@@ -208,7 +187,7 @@ class Parser {
         let note = "c d ef g a h".indexOf(name.toLowerCase())
         noteId += note;
         noteId += 12 * height.length * direction;
-        return this.calculateFrequency(noteId);
+        return noteId;
     }
 }
 // C' D' E' F' G' A' H' C D E F G A H c d e f g a h c' d' e' f' g' a' h' c'' d'' e'' f'' g'' a'' h'' c'''
