@@ -166,6 +166,7 @@ class Parser {
 
     getPitch(name, modifier, height)
     {
+        let BASE_NOTE = 48;
         if(name.toLowerCase() == "p") {
             return 0;
         }
@@ -173,10 +174,10 @@ class Parser {
         let direction;
         if(name.match(/[CDEFGAH]/)) {
             direction = -1;
-            noteId = 28;
+            noteId = BASE_NOTE;
         } else {
             direction = +1;
-            noteId = 40;
+            noteId = BASE_NOTE + 12;
         }
         if(modifier === "#") {
             noteId++;
