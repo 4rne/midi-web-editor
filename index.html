@@ -7,11 +7,16 @@
         <div class="menu" style="margin-bottom: 2em">
             Midi-Editor for <a href="https://github.com/ProjektionTV/Esp32MidiPlayer" target="_blank">Esp32MidiPlayer</a> | Improve this editor on <a href="https://github.com/4rne/midi-web-editor" target="_blank">GitHub</a>
         </div>
+        Volume
         <div class="controls">
-            <input type="range" id="volume" min="1" max="100" value="10">
+            <input type="range" id="volume" min="1" max="50" value="10">
             <input type="button" value="play" id="play">
             <input type="button" value="stop" id="stop">
         </div>
         <textarea id="input" cols="120" rows="10"></textarea>
+        <div>
+            <h2>Samples</h2>
+            <div id="samples"></div>
+        </div>
     </body>
 </html>
