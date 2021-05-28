@@ -35,10 +35,7 @@ function parseAndPlay() {
 
 function setInstrumentAndPlay(id) {
     id = parseInt(id);
-    if (id === undefined) {
-        console.error(id);
-    }
-    number = ("00" + id).slice(-3) + "0"
+    number = ("00" + (id - 1)).slice(-3) + "0"
     instrumenName = '_tone_' + number + '_FluidR3_GM_sf2_file'
     player.loader.startLoad(context, 'https://surikov.github.io/webaudiofontdata/sound/' + number + '_FluidR3_GM_sf2_file.js', instrumenName);
     player.loader.waitLoad(function () {
