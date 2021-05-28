@@ -2,6 +2,7 @@ var bpm = 240;
 var playBtn;
 var volumeSlider;
 var parser;
+var instrument;
 
 var samples = [["Nokia tune", "bpm160 e'8 d'8 f#4 g#4 c'#8 h8 d4 e4 h8 a8 c#4 e4 a2."],
                ["Kein Anschluss unter dieser Nummer", "a'#2 f''2 a''#2"],
@@ -16,7 +17,8 @@ var reverberator = player.createReverberator(context);
 reverberator.output.connect(master.input);
 reverberator.wet.gain.setTargetAtTime(0.05, 0, 0.0001);
 master.output.connect(context.destination);
-player.loader.decodeAfterLoading(context, '_tone_0001_FluidR3_GM_sf2_file');
+player.loader.decodeAfterLoading(context, '_tone_0000_FluidR3_GM_sf2_file');
+instrument = _tone_0000_FluidR3_GM_sf2_file;
 
 function parseAndPlay() {
     context.resume().then(() => {
@@ -26,8 +28,17 @@ function parseAndPlay() {
     playBtn.disabled = true;
     playBtn.value = "playing...";
     parser = new Parser(input.value);
-    parser.parse();
-    parser.play();
+    parser.parseAndPlay();
+}
+
+function setInstrumentAndPlay(id){
+    number = ("00" + id).slice(-3) + "0"
+    instrumenName = '_tone_' + number + '_FluidR3_GM_sf2_file'
+	player.loader.startLoad(context, 'https://surikov.github.io/webaudiofontdata/sound/' + number + '_FluidR3_GM_sf2_file.js', instrumenName);
+	player.loader.waitLoad(function () {
+		instrument = eval(instrumenName);
+        parser.play();
+	});
 }
 
 function registerEvents()
@@ -82,7 +93,7 @@ class Tone {
     play()
     {
         if(this.pitch != 0) {
-            player.queueWaveTable(context, master.input, _tone_0001_FluidR3_GM_sf2_file, 0, this.pitch, this.length / 750);
+            player.queueWaveTable(context, master.input, instrument, 0, this.pitch, this.length / 750);
 
             setTimeout(
                 function(x) {
@@ -167,12 +178,13 @@ class Parser {
         this.tones.reverse()
     }
 
-    parse() {
+    parseAndPlay() {
         this.parseBpm();
         let midiInstrumentNumber = this.parseMidiInstrument();
         console.log(midiInstrumentNumber);
         input.focus();
         this.parseNotes();
+        setInstrumentAndPlay(midiInstrumentNumber);
     }
 
     play() {
