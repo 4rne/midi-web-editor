@@ -37,7 +37,7 @@ function registerEvents()
     stopBtn = document.getElementById("stop")
     volumeSlider = document.getElementById("volume")
     if(input.value == "") {
-        input.value = "e'8 d'8 f#4 g#4 c'#8 h8 d4 e4 h8 a8 c#4 e4 a2."
+        input.value = samples[0][1];
     }
     playBtn.addEventListener("click", function(){
         parseAndPlay();
