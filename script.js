@@ -112,7 +112,7 @@ class Parser {
         this.noteEnd = this.notes[this.cursorPosition].length
     }
 
-    parse() {
+    parseBpm() {
         if(this.notes[0].match(/bpm([0-9]+)/) !== null) {
             bpm = this.notes[0].match(/bpm([0-9]+)/)[1];
             this.cursorPosition = this.notes[0].length + 1;
@@ -120,7 +120,20 @@ class Parser {
         } else {
             bpm = 240;
         }
-        input.focus();
+    }
+
+    parseMidiInstrument() {
+        if(this.notes[0].match(/^[0-9]+$/) !== null) {
+            let number = this.notes[0].match(/^([0-9]+)$/)[1];
+            this.cursorPosition += this.notes[0].length + 1;
+            this.notes.shift();
+            return number;
+        } else {
+            return 0;
+        }
+    }
+
+    parseNotes() {
         for(let i = 0; i < this.notes.length; i++)
         {
             let el = this.notes[i]
@@ -152,6 +165,14 @@ class Parser {
             this.tones.push(playChord);
         }
         this.tones.reverse()
+    }
+
+    parse() {
+        this.parseBpm();
+        let midiInstrumentNumber = this.parseMidiInstrument();
+        console.log(midiInstrumentNumber);
+        input.focus();
+        this.parseNotes();
     }
 
     play() {
