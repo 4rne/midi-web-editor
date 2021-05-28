@@ -116,7 +116,7 @@ class Parser {
     constructor(str) {
         this.selectionStart = input.selectionStart;
         this.selectionEnd = input.selectionEnd;
-        this.notes = str.trim().split(" ");
+        this.notes = str.trim().split(/\s+/);
         this.tones = [];
         this.noteBegin = 0;
         this.cursorPosition = 0;
