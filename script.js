@@ -13,9 +13,9 @@ const context = new (window.AudioContext || window.webkitAudioContext)();
 var player = new WebAudioFontPlayer();
 var master = player.createChannel(context);
 var reverberator = player.createReverberator(context);
-master.output.connect(reverberator.input);
-reverberator.output.connect(context.destination);
+reverberator.output.connect(master.input);
 reverberator.wet.gain.setTargetAtTime(0.05, 0, 0.0001);
+master.output.connect(context.destination);
 player.loader.decodeAfterLoading(context, '_tone_0001_FluidR3_GM_sf2_file');
 
 function parseAndPlay() {
