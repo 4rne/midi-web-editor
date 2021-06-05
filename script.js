@@ -4,11 +4,14 @@ var volumeSlider;
 var parser;
 var instrument;
 
-var samples = [["Nokia tune", "bpm160 e'8 d'8 f#4 g#4 c'#8 h8 d4 e4 h8 a8 c#4 e4 a2."],
-["Kein Anschluss unter dieser Nummer", "a'#2 f''2 a''#2"],
+var samples = [["Nokia tune", "82 e''8 d''8 f'#4 g'#4 c''#8 h'8 d'4 e'4 h'8 a'8 c'#4 e'4 a'2."],
+["Kein Anschluss unter dieser Nummer", "81 a'#2 f''2 a''#2"],
 ["Alle meine Entchen", "c d e f g2 g2 a a a a g1 a a a a g1 f f f f e2 e2 g g g g c"],
-["Brahms Wiegenlied", "bpm100 f#8 f#8 a4. f#8 f# a p f#8 a8 d' c'#4. h8 h a e8 f#8 g e e8 f#8 g p e8 g8 c'#8 h8 a c'# d'"],
-["Tonleiter 5 Oktaven", "C' D' E' F' G' A' H' C D E F G A H c d e f g a h c' d' e' f' g' a' h' c'' d'' e'' f'' g'' a'' h'' c'''"]];
+["Brahms Wiegenlied", "bpm100 f#8 f#8 a4. f#8 f# a p f#8 a8 d' c'#4. h8 h a e8 f#8 g e e8 f#8 g p e8 g8 c'#8 h8 a c'# d' p d8 d8 d'2 h8 g8 a2 f#8 d8 g a h a2 d8 d8 d'2 h8 g8 a2 f#8 d8 g8 a16 g16 f# e d2"],
+["Big Ben", "bpm100 12 C E D G'2. C D E C2. E C D G'2. G' D E C2."],
+["Pippi Langstrumpf", "C4 F4 A4 F4 G2 Hb8 A8 G8 F8 E4 G4 C4 E4 F2 A2 C4 F4 A4 F4 G2 Hb8 A8 G8 F8 E4 G4 C4 E4 F p2 A2 A4 A4 Hb2 Hb4 Hb8 A8 G2 G4 G8 G4 F8 F8 E4 F4 G2 A2 A4 A4 Hb2 Hb4 A4 G4 G4 F4 E4 F1"],
+["Nyan Cat (loop)", "f# g# d#8 d# H8 d8 c#8 H H c# d d8 c#8 H8 c#8 d#8 f#8 g#8 d#8 f#8 c#8 d#8 H8 c#8 H8 d# f# g#8 d#8 f#8 c#8 d#8 H8 d8 d#8 d8 c#8 H8 c#8 d H8 c#8 d#8 f#8 c#8 d#8 c#8 H8 c# H d#"],
+];
 
 const predefinedInstruments = { "piano": 1, "vibes": 11, "organ": 19, "guitar": 30, "brass": 62 };
 
